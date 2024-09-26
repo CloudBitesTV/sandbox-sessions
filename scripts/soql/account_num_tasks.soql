@@ -1,0 +1,2 @@
+SELECT Id, Name, Number_of_Open_Tasks__c
+  FROM Account
