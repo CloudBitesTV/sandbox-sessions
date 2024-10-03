@@ -140,7 +140,7 @@ private with sharing class TaskTrigger_Test {
         Test.stopTest();
 
         acc = [SELECT Number_of_Open_Tasks__c FROM Account WHERE Id = :acc.Id];
-        System.Assert.areEqual(null, acc.Number_of_Open_Tasks__c, 'Incorrect number of open tasks on account');
+        System.Assert.areEqual(0, acc.Number_of_Open_Tasks__c, 'Incorrect number of open tasks on account');
 
     }
 
@@ -176,7 +176,7 @@ private with sharing class TaskTrigger_Test {
         System.Assert.areEqual(101, acc.Number_of_Open_Tasks__c, 'Incorrect number of open tasks on account');
 
         acc2 = [SELECT Number_of_Open_Tasks__c FROM Account WHERE Id = :acc2.Id];
-        System.Assert.areEqual(null, acc2.Number_of_Open_Tasks__c, 'Incorrect number of open tasks on account');
+        System.Assert.areEqual(0, acc2.Number_of_Open_Tasks__c, 'Incorrect number of open tasks on account');
 
     }
 
@@ -228,7 +228,7 @@ private with sharing class TaskTrigger_Test {
         insert tsk;
             
         acc = [SELECT Id, Number_of_Open_Tasks__c FROM Account WHERE Id = :acc.Id];
-        System.Assert.areEqual(null, acc.Number_of_Open_Tasks__c, 'Start state: Incorrect number of open tasks on account');
+        System.Assert.areEqual(0, acc.Number_of_Open_Tasks__c, 'Start state: Incorrect number of open tasks on account');
         
         Task taskToUpdate = new Task();
         taskToUpdate.Id = tsk.Id;
@@ -292,7 +292,7 @@ private with sharing class TaskTrigger_Test {
         insert tsk;
             
         acc = [SELECT Id, Number_of_Open_Tasks__c FROM Account WHERE Id = :acc.Id];
-        System.Assert.areEqual(null, acc.Number_of_Open_Tasks__c, 'Start state: Incorrect number of open tasks on account');
+        System.Assert.areEqual(0, acc.Number_of_Open_Tasks__c, 'Start state: Incorrect number of open tasks on account');
 
         Test.startTest();
 
@@ -301,6 +301,6 @@ private with sharing class TaskTrigger_Test {
         Test.stopTest();
 
         acc = [SELECT Id, Number_of_Open_Tasks__c FROM Account WHERE Id = :acc.Id];
-        System.Assert.areEqual(null, acc.Number_of_Open_Tasks__c, 'Post test: Incorrect number of open tasks on account');
+        System.Assert.areEqual(0, acc.Number_of_Open_Tasks__c, 'Post test: Incorrect number of open tasks on account');
     }
 }
