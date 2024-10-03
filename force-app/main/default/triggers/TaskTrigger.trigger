@@ -74,7 +74,28 @@ trigger TaskTrigger on Task (before insert, before update, before delete, after 
 
 
         when AFTER_DELETE {
+            for(Task tsk: Trigger.old){
+                if (String.valueof(tsk.WhatId).substring(0,3) == acctKeyPrefix && !tsk.Status.equals('Completed')){
+                    if (!countMap.containsKey(tsk.WhatId)){
+                        countMap.put(tsk.WhatId, 1);
+                    } else {
+                        countMap.put(tsk.WhatId, countMap.get(tsk.WhatId) + 1);
+                    }
+                }
+            }
 
+            System.debug('countMap: ' + countMap);
+
+            accountsToUpdate = [SELECT Id, Number_of_Open_Tasks__c FROM Account WHERE Id IN: countMap.keySet()];
+
+            for(Account acct: accountsToUpdate){
+                Integer currentTaskCount = Integer.valueOf(acct.Number_Of_Open_Tasks__c) ?? 0; 
+                System.debug('currentTaskCount: ' + currentTaskCount);
+                acct.Number_Of_Open_Tasks__c = currentTaskCount - countMap.get(acct.Id); 
+
+            }
+
+            update accountsToUpdate;
         }
             
         when else {

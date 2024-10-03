@@ -251,4 +251,56 @@ private with sharing class TaskTrigger_Test {
 
     // This also dovetails in to a TDD discussion. If the test was written for zero, then the original design of the
     // insert trigger would break the test. 
+
+    @isTest
+    private static void testDeleteSingleOpenTask() {
+        Account acc = new Account();
+        acc.Name = 'Test Account';
+        insert acc;
+
+        Task tsk = new Task();
+        tsk.WhatId = acc.Id;
+        tsk.Subject = 'Test task';
+        tsk.Status = 'Not Started';
+            
+        insert tsk;
+            
+        acc = [SELECT Id, Number_of_Open_Tasks__c FROM Account WHERE Id = :acc.Id];
+        System.Assert.areEqual(1, acc.Number_of_Open_Tasks__c, 'Start state: Incorrect number of open tasks on account');
+
+        Test.startTest();
+
+        delete tsk;
+
+        Test.stopTest();
+
+        acc = [SELECT Id, Number_of_Open_Tasks__c FROM Account WHERE Id = :acc.Id];
+        System.Assert.areEqual(0, acc.Number_of_Open_Tasks__c, 'Post test: Incorrect number of open tasks on account');
+    }
+
+    @isTest
+    private static void testDeleteSingleClosedTask() {
+        Account acc = new Account();
+        acc.Name = 'Test Account';
+        insert acc;
+
+        Task tsk = new Task();
+        tsk.WhatId = acc.Id;
+        tsk.Subject = 'Test task';
+        tsk.Status = 'Completed';
+            
+        insert tsk;
+            
+        acc = [SELECT Id, Number_of_Open_Tasks__c FROM Account WHERE Id = :acc.Id];
+        System.Assert.areEqual(null, acc.Number_of_Open_Tasks__c, 'Start state: Incorrect number of open tasks on account');
+
+        Test.startTest();
+
+        delete tsk;
+
+        Test.stopTest();
+
+        acc = [SELECT Id, Number_of_Open_Tasks__c FROM Account WHERE Id = :acc.Id];
+        System.Assert.areEqual(null, acc.Number_of_Open_Tasks__c, 'Post test: Incorrect number of open tasks on account');
+    }
 }
