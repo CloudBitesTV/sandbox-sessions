@@ -41,16 +41,19 @@ public with sharing class TaskTriggerHandler {
             }
         }
 
+        System.debug('acctIdSet');
+        System.debug(acctIdSet);
+
         accountsToUpdate = getUpdatedAccounts(acctIdSet);
 
         update accountsToUpdate;
     }
 
     private List<Account> getUpdatedAccounts(Set<Id> accountIds) {
-        Map<Id, Account> accountsToUpdateMap = new Map<Id, Account>();
+        List<Account> accountsToUpdateMap = new List<Account>();
 
         //retrieve all accounts in set
-        accountsToUpdateMap = new Map<Id, Account>([SELECT Id, Number_of_Open_Tasks__c FROM Account WHERE Id IN: accountIds]);
+        accountsToUpdate = new [SELECT Id, Number_of_Open_Tasks__c FROM Account WHERE Id IN: accountIds];
 
         //run aggregate query for tasks grouping by account
         List<AggregateResult> taskAcctCounts = [SELECT Count(Id) TaskCount, WhatId AccountId 
@@ -59,13 +62,18 @@ public with sharing class TaskTriggerHandler {
                                 AND IsClosed = false AND IsDeleted = false
                             GROUP BY WhatId];
 
+        Map<Id, Integer> acctIdToCountMap = new Map<Id, Integer>();
         for(AggregateResult result: taskAcctCounts) {
             Id acctId = (Id)result.get('AccountId');
             Integer taskCount = (Integer)result.get('TaskCount');
-            accountsToUpdateMap.get(acctId).Number_Of_Open_Tasks__c = taskCount;
+            acctIdToCountMap.put(acctId, taskCount);
         }
 
-        return accountsToUpdateMap.values();
+        for(Account acc : accountsToUpdateMap) {
+            acc.Number_of_Open_Tasks__c = acctIdToCountMap.get(acc.Id) ?? 0;
+        }
+
+        return accountsToUpdateMap;
     }
     
 }
