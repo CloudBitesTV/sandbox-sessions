@@ -1,4 +1,4 @@
-public with sharing class TaskTriggerHandler {
+public with sharing class TaskTriggerHandler extends TriggerHandler {
 
     List<Account> accountsToUpdate = new List<Account>();
     Map<Id, Integer> countMap = new Map<Id, Integer>();
@@ -6,8 +6,8 @@ public with sharing class TaskTriggerHandler {
 
     String acctKeyPrefix = Account.getSObjectType().getDescribe().keyprefix;
     
-    public void afterInsert(List<Task> newList) {
-        for (Task tsk: newList){
+    public override void afterInsert() { 
+        for (Task tsk: (List<Task>)newRecords) {
             // is this an open task, with an account id in WhatId
             if (!tsk.IsClosed && String.valueof(tsk.WhatId).substring(0,3) == acctKeyPrefix){
                 acctIdSet.add(tsk.WhatId);
@@ -19,10 +19,11 @@ public with sharing class TaskTriggerHandler {
         update accountsToUpdate;
     }
 
-    public void afterUpdate(Map<Id, Task> newMap, Map<Id,Task> oldMap) {
-        for (Task tsk: newMap.values()){
+    public override void afterUpdate() {
+        for (Task tsk: (List<Task>)newRecordMap.values()){
             // when status is updated on an account task, we need to act
-            Boolean closureChange = tsk.IsClosed != oldMap.get(tsk.Id).IsClosed;
+            Task oldTask = (Task)oldRecordMap.get(tsk.Id);
+            Boolean closureChange = tsk.IsClosed != oldTask.IsClosed;
 
             if (closureChange && String.valueof(tsk.WhatId).substring(0,3) == acctKeyPrefix){
                 acctIdSet.add(tsk.WhatId);
@@ -34,8 +35,8 @@ public with sharing class TaskTriggerHandler {
         update accountsToUpdate;
     }
 
-    public void afterDelete(Map<Id,Task> oldMap) {
-        for(Task tsk: oldMap.values()){
+    public override void afterDelete() {
+        for(Task tsk: (List<Task>)oldRecordMap.values()){
             if (String.valueof(tsk.WhatId).substring(0,3) == acctKeyPrefix){
                 acctIdSet.add(tsk.WhatId);
             }
