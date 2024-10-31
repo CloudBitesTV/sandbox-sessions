@@ -41,19 +41,16 @@ public with sharing class TaskTriggerHandler {
             }
         }
 
-        System.debug('acctIdSet');
-        System.debug(acctIdSet);
-
         accountsToUpdate = getUpdatedAccounts(acctIdSet);
 
         update accountsToUpdate;
     }
 
     private List<Account> getUpdatedAccounts(Set<Id> accountIds) {
-        List<Account> accountsToUpdateMap = new List<Account>();
+        List<Account> accountsToUpdate = new List<Account>();
 
         //retrieve all accounts in set
-        accountsToUpdate = new [SELECT Id, Number_of_Open_Tasks__c FROM Account WHERE Id IN: accountIds];
+        accountsToUpdate = [SELECT Id, Number_of_Open_Tasks__c FROM Account WHERE Id IN: accountIds];
 
         //run aggregate query for tasks grouping by account
         List<AggregateResult> taskAcctCounts = [SELECT Count(Id) TaskCount, WhatId AccountId 
@@ -69,11 +66,11 @@ public with sharing class TaskTriggerHandler {
             acctIdToCountMap.put(acctId, taskCount);
         }
 
-        for(Account acc : accountsToUpdateMap) {
+        for(Account acc : accountsToUpdate) {
             acc.Number_of_Open_Tasks__c = acctIdToCountMap.get(acc.Id) ?? 0;
         }
 
-        return accountsToUpdateMap;
+        return accountsToUpdate;
     }
     
 }
