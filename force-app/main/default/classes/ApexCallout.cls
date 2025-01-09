@@ -1,20 +1,19 @@
 public with sharing class ApexCallout {
 
-    private static final String namedCredential = 'callout:PexelsNC';
-    private static final String endpoint = '/v1/curated?per_page=1&page=';
+    private static final String PEXELS_NAMED_CREDENTIAL = 'callout:PexelsNC';
+    private static final String API_ENDPOINT = '/v1/curated?per_page=1&page=';
 
     @AuraEnabled(cacheable=true)
     public static String getPexelPic(Integer pageNumber){
 
         HttpRequest req = new HttpRequest();
         
-        req.setEndpoint(namedCredential + endpoint + pageNumber);
+        req.setEndpoint(PEXELS_NAMED_CREDENTIAL + API_ENDPOINT + pageNumber);
         req.setMethod('GET');
 
         Http http = new Http();
         
         HttpResponse resp = http.send(req);
-        System.debug(resp.getBody());
 
         return resp.getBody();
     }
