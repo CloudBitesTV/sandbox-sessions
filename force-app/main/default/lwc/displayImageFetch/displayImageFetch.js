@@ -24,11 +24,10 @@ export default class DisplayImageFetch extends LightningElement {
         });
 
         let jsonBody = await response.json();
-        console.log(jsonBody);
 
         this.pictureData = jsonBody.photos[0].src.original;
 
-        console.log(`Fetch variation took ${Date.now() - this.start}`);
+        // console.log(`Fetch variation took ${Date.now() - this.start}`);
     }
 
 }
