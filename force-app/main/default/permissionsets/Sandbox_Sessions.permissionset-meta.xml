@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Items added by Sandbox Sessions for use</description>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Number_of_Open_Tasks__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <hasActivationRequired>false</hasActivationRequired>
+    <label>Sandbox Sessions</label>
+</PermissionSet>
