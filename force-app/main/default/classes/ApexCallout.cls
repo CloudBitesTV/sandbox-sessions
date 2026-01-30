@@ -6,6 +6,8 @@ public with sharing class ApexCallout {
     @AuraEnabled(cacheable=true)
     public static String getPexelPic(Integer pageNumber){
 
+        Logger.debug('Initiating callout with pageNumber ' + pageNumber);
+
         HttpRequest req = new HttpRequest();
         
         req.setEndpoint(PEXELS_NAMED_CREDENTIAL + API_ENDPOINT + pageNumber);
@@ -14,6 +16,9 @@ public with sharing class ApexCallout {
         Http http = new Http();
         
         HttpResponse resp = http.send(req);
+
+        Logger.debug(resp.getBody());
+        Logger.saveLog();
 
         return resp.getBody();
     }
