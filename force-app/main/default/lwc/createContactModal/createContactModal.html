@@ -1,0 +1,24 @@
+<template>
+    <div slot="title">
+        <lightning-modal-header label="Create Associated Contactx"></lightning-modal-header>
+    </div>
+    <lightning-modal-body>
+        <lightning-layout multiple-rows="true">
+                <lightning-layout-item size="12">
+                    <lightning-input type="text" label="First name" onchange={handleFirstNameChange} placeholder="Tim" required></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item size="12">
+                    <lightning-input type="text" label="Last name" onchange={handleLastNameChange} placeholder="Burr" required></lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item size="12">
+                    <lightning-input type="text" label="Email" onchange={handleEmailChange} placeholder="t.burr@example.com" required></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <div class="slds-var-m-top_medium">
+            <lightning-button label="Save" variant="brand" class="slds-var-m-right_x-small" onclick={handleSave}></lightning-button>
+            <lightning-button label="Cancel" onclick={handleCancel} ></lightning-button>
+        </div>
+    </lightning-modal-footer>
+</template>
